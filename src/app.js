@@ -3,16 +3,16 @@ const express = require('express')
 const app = express();
 port = 3000
 
-app.use('/', (req, res)=> {
-    res.send('can you run?')
+app.post('/user', (req, res) => {
+    res.send('data added successfully')
 })
 
-app.use('/say', (req, res) =>{
-    res.send('brain is bigger than sky')
+app.get('/user', (req, res) => {
+    res.send('data get successfully')
 })
 
-app.use('/byy', (req, res) => {
-    res.send('learning phase compelete Now you can do work on real time project')
+app.delete('/user', (req, res) => {
+    res.send('data delete successfully')
 })
 
 app.listen(3000, () =>{
