@@ -8,18 +8,39 @@ port = 3000
 
 
 app.post('/signup', async (req, res) => {
-    
+    const data = req.body
     // console.log(req.body);
 
     try {
-    const user = new User(req.body)
-        console.log(user);
+        if (data.skills && data.skills.length > 5) {
+            res.status(400).send('Cannot add more than 5 skills')
+
+        }
+
+        if (data.password && data.password.length < 8) {
+            res.status(400).send('Password should be at least 8 characters long')
+
+        }
+
+        if(data.age && data.age < 18){
+            res.status(400).send('Age must be at least 18 years old')
+        }
+
+        const emailRegex = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
+        if (data.emailId && !emailRegex.test(data.emailId)) {
+            return res.status(400).send('Invalid email format');
+        }
         
+
+
+        const user = new User(req.body)
+        console.log(user);
+
         await user.save();
         res.send("data post successfully")
 
     } catch (err) {
-console.log(err);
+        console.log(err);
 
         res.status(500).send('something went wrong')
     }
@@ -107,14 +128,33 @@ app.delete('/user', async (req, res) => {
     }
 })
 
-app.patch('/user', async(req, res) => {
+app.patch('/user/:userId', async (req, res) => {
     console.log(req.body);
-    const userId = req.body.userId
+    const userId = req.params.userId
     const data = req.body
+
     try {
- await User.findByIdAndUpdate({_id: userId}, data)
-res.send('user updated successfully')
+        const ALLOWED_UPDATES = ['skills', 'gender', 'age', 'photoUrl']
+
+        const isUpdateAllowed = Object.keys(data).every((k) =>
+            ALLOWED_UPDATES.includes(k)
+        );
+        if (!isUpdateAllowed) {
+            throw new Error("Updates not allowed");
+        }
+
+        if (data.skills.length > 5) {
+
+            throw new Error('can not add more than 5 skills')
+        }
+
+        const user = await User.findByIdAndUpdate({ _id: userId }, data)
+        console.log(user);
+
+        res.send('user updated successfully')
     } catch (err) {
+        console.log(err);
+
         res.status(400).send('something went wrong')
     }
 })
