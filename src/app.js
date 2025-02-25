@@ -5,21 +5,23 @@ const app = express();
 app.use(express.json())
 port = 3000
 
-// const { adminAuth, userAuth } = require('../middlewares/auth')
-// app.use("/admin", adminAuth)
+
 
 app.post('/signup', async (req, res) => {
+    
     // console.log(req.body);
 
-    const user = new User(req.body)
     try {
-
+    const user = new User(req.body)
+        console.log(user);
+        
         await user.save();
         res.send("data post successfully")
 
     } catch (err) {
+console.log(err);
 
-        res.status(500).send('something went wrong', err)
+        res.status(500).send('something went wrong')
     }
 
 })
@@ -116,10 +118,6 @@ res.send('user updated successfully')
         res.status(400).send('something went wrong')
     }
 })
-
-
-
-
 
 
 connectDB().then(() => {
