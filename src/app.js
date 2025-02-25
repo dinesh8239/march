@@ -1,6 +1,7 @@
 const express = require('express')
 const connectDB = require('../config/database')
 const User = require('../model/user')
+const { validateSchemaUpdate } = require('./utils/validation')
 const app = express();
 app.use(express.json())
 port = 3000
@@ -8,30 +9,30 @@ port = 3000
 
 
 app.post('/signup', async (req, res) => {
-    const data = req.body
     // console.log(req.body);
 
     try {
-        if (data.skills && data.skills.length > 5) {
-            res.status(400).send('Cannot add more than 5 skills')
+        // const data = req.body
+        // if (data.skills && data.skills.length > 5) {
+        //     res.status(400).send('Cannot add more than 5 skills')
 
-        }
+        // }
 
-        if (data.password && data.password.length < 8) {
-            res.status(400).send('Password should be at least 8 characters long')
+        // if (data.password && data.password.length < 8) {
+        //     res.status(400).send('Password should be at least 8 characters long')
 
-        }
+        // }
 
-        if(data.age && data.age < 18){
-            res.status(400).send('Age must be at least 18 years old')
-        }
+        // if (data.age && data.age < 18) {
+        //     res.status(400).send('Age must be at least 18 years old')
+        // }
 
-        const emailRegex = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
-        if (data.emailId && !emailRegex.test(data.emailId)) {
-            return res.status(400).send('Invalid email format');
-        }
-        
+        // const emailRegex = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
+        // if (data.emailId && !emailRegex.test(data.emailId)) {
+        //     return res.status(400).send('Invalid email format');
+        // }
 
+        validateSchemaUpdate(req);
 
         const user = new User(req.body)
         console.log(user);
@@ -42,7 +43,7 @@ app.post('/signup', async (req, res) => {
     } catch (err) {
         console.log(err);
 
-        res.status(500).send('something went wrong')
+        res.status(500).send('ERROR: ' + err.message)
     }
 
 })
@@ -130,10 +131,10 @@ app.delete('/user', async (req, res) => {
 
 app.patch('/user/:userId', async (req, res) => {
     console.log(req.body);
-    const userId = req.params.userId
-    const data = req.body
 
     try {
+        const userId = req.params.userId
+        const data = req.body
         const ALLOWED_UPDATES = ['skills', 'gender', 'age', 'photoUrl']
 
         const isUpdateAllowed = Object.keys(data).every((k) =>
