@@ -11,7 +11,7 @@ const validateSchemaUpdate = (req) => {
         throw new Error('Invalid emaiId format')
     }
     else if (password.length < 8) {
-        throw new Error('password should be at least 8 character')
+        throw new Error('please enter a strong password')
     }
     else if(age < 18) {
         throw new Error('age is not valid')

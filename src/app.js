@@ -2,10 +2,10 @@ const express = require('express')
 const connectDB = require('../config/database')
 const User = require('../model/user')
 const { validateSchemaUpdate } = require('./utils/validation')
+const bcrypt = require('bcrypt')
 const app = express();
 app.use(express.json())
 port = 3000
-
 
 
 app.post('/signup', async (req, res) => {
@@ -31,14 +31,52 @@ app.post('/signup', async (req, res) => {
         // if (data.emailId && !emailRegex.test(data.emailId)) {
         //     return res.status(400).send('Invalid email format');
         // }
-
         validateSchemaUpdate(req);
+        const { firstName, lastName, emailId, password, skills } = req.body
 
-        const user = new User(req.body)
+        const hashPassword = await bcrypt.hash(password, 10);
+        console.log(hashPassword);
+
+
+        const user = new User({
+            firstName,
+            lastName,
+            emailId,
+            password: hashPassword,
+            skills
+        })
         console.log(user);
 
         await user.save();
         res.send("data post successfully")
+
+    } catch (err) {
+        console.log(err);
+
+        res.status(500).send('ERROR: ' + err.message)
+    }
+
+})
+
+app.post('/login', async (req, res) => {
+
+    try {
+        const { emailId, password } = req.body
+
+        const user = await User.findOne({ emailId: emailId })
+        if (!user) {
+            console.log('User not found with email:', emailId);
+            throw new Error('Email is not present in the db')
+        }
+
+        const isAllowedPassword = await bcrypt.compare(password, user.password);
+        if (isAllowedPassword) {
+            console.log(isAllowedPassword);
+
+            res.send('login successfully')
+        } else {
+            res.status(400).send('Incorrect password')
+        }
 
     } catch (err) {
         console.log(err);
