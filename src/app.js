@@ -75,15 +75,12 @@ app.post('/login', async (req, res) => {
 
         const isAllowedPassword = await bcrypt.compare(password, user.password);
         if (isAllowedPassword) {
-            //Create a JWT Token 
 
-            const token = await jwt.sign({ _id: user._id }, "march@2025$790");
+            const token = await user.getJWT()
             console.log(token);
 
-
-
-            //Add the token to cookie and send the response back to the user            
-            res.cookie("token", token);
+            res.cookie("token", token, { expires: new Date(Date.now() + 900000), httpOnly: true })
+        
             res.send('login successfully')
 
         } else {
@@ -102,6 +99,8 @@ app.get('/profile', userAuth, async (req, res) => {
 
     try {
         const user = req.user
+
+        
 
         res.send(user);
 

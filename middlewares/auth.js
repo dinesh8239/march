@@ -15,13 +15,13 @@ try{
         throw new Error('User does not exist');
     }
     
-    res.send(user);
+    // res.send(user);
     
 
     req.user = user;
     next();
 } catch (err) {
-    res.status(400).send('"ERRPR: ' + err.message)
+    res.status(400).send('"ERROR: ' + err.message)
 }
 }
 
