@@ -13,12 +13,12 @@ const validateSchemaUpdate = (req) => {
     else if (password.length < 8) {
         throw new Error('please enter a strong password')
     }
-    else if(age < 18) {
+    else if (age < 18) {
         throw new Error('age is not valid')
     }
-    else if(skills.length > 5) {
-        throw new Error('skills should be less than 5')
-    }
+    // else if(skills.length > 5) {
+    //     throw new Error('skills should be less than 5')
+    // }
 }
 
 module.exports = {

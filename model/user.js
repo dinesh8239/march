@@ -1,6 +1,5 @@
 const mongoose = require('mongoose')
 var jwt = require('jsonwebtoken');
-const validator = require('validator')
 
 const { Schema } = mongoose;
 
@@ -10,7 +9,7 @@ const userSchema = new Schema({
         type: String,
         minLength: 2,
         maxLength: 15,
-        lowercase: true,
+        // lowercase: true,
         required: true
     },
     lastName: {
