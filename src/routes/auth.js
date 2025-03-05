@@ -11,11 +11,10 @@ authRouter.post('/signup', async (req, res) => {
 
     try {
         validateSchemaUpdate(req);
-        const { firstName, lastName, emailId, password } = req.body
+        const { firstName, lastName, emailId, password, gender } = req.body
 
         const hashPassword = await bcrypt.hash(password, 10);
         console.log(hashPassword);
-
 
         const user = new User({
             firstName,
@@ -23,6 +22,7 @@ authRouter.post('/signup', async (req, res) => {
             emailId,
             password: hashPassword,
             // skills
+            gender
         })
         console.log(user);
 
@@ -70,5 +70,15 @@ authRouter.post('/login',async (req, res) => {
     }
 
 })
+
+authRouter.post('/logout', (req, res) => {
+    res.cookie = ("token", null ,{
+        expires: new Date(Date.now())
+    }),
+
+    res.send('logout successfully')
+})
+
+
 
 module.exports = authRouter;

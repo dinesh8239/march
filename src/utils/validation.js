@@ -5,7 +5,7 @@ const validateSchemaUpdate = (req) => {
     if (!firstName || !lastName) {
         throw new Error('Name is required')
     }
-
+   
     const emailRegex = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
     if (emailId && !emailRegex.test(emailId)) {
         throw new Error('Invalid emaiId format')
@@ -21,6 +21,25 @@ const validateSchemaUpdate = (req) => {
     // }
 }
 
+const validateEditoProfileData = (req) => {
+    const allowedEditFields = [
+        "firstName",
+        "lastName",
+        "emialId",
+        "photoUrl",
+        "gender",
+        "age",
+        "about",
+        "skills"
+    ]
+    const isEditAllowed = Object.keys(req.body).every((field) => 
+        allowedEditFields.includes(field)
+    )
+
+    return isEditAllowed;
+}
+    
 module.exports = {
-    validateSchemaUpdate
+    validateSchemaUpdate,
+    validateEditoProfileData
 } 
