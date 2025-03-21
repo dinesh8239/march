@@ -60,7 +60,45 @@ profileRouter.post('/profile/edit', userAuth, async (req, res) => {
 })
 
 
+profileRouter.patch('/profile/forgotPassword', userAuth, async (req, res) => {
+    try {
+        const { email } = req.body;
 
+        const user = await User.findOne({ email });
+        if (!user) {
+            throw new Error('User with this email does not exist.');
+        }
+
+        const resetToken = jwt.sign({ _id: user._id }, "march@2025$790", { expiresIn: '1h' });
+
+        const resetUrl = `http://yourfrontend.com/reset-password?token=${resetToken}`;
+
+        const transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: 'potte7866@gmail.com', 
+                pass: 'Harry@123',  
+            }
+        });
+
+        const mailOptions = {
+            from: 'potte7866@gmail.com',
+            to: 'potte7866@gmail.com',
+            subject: 'Password Reset Request',
+            text: `reset your password`
+        };
+
+        await transporter.sendMail(mailOptions);
+
+        res.json({
+            message: 'Password reset link has been sent to your email.'
+        });
+
+    } catch (err) {
+        console.log(err);
+        res.status(400).send('ERROR: ' + err.message);
+    }
+});
 
 
 
